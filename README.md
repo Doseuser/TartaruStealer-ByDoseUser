@@ -2,7 +2,7 @@
 
 ---
 
-# 🐂 TARTARUS STEALER  
+# 🐂 TARTARUS STEALER BY DOSEUSER  
 *Educational Malware Analysis & Offensive Security Research*  
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
@@ -234,6 +234,4 @@ For questions, suggestions, or problems
 <p align="center">
   <b>🐂 TARTARUS STEALER – Unleash the Bull, but responsibly.</b>
 </p>
-```
 
----
