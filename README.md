@@ -195,21 +195,6 @@ Recommended Setup
 · Run as Administrator.
 · Monitor with Process Monitor, API Monitor, or a debugger to understand the techniques.
 
----
-
-📸 Screenshots
-
-
-
-🤝 Contributing
-
-Contributions are welcome! This project is intended for educational advancement. Please open an issue or a pull request if you have improvements, bug fixes, or new techniques to add.
-
-Guidelines:
-
-· Keep the code portable and well‑commented.
-· Add educational explanations when introducing new anti‑analysis tricks.
-· Ensure all added features respect the non‑malicious intent.
 
 ---
 
