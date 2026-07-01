@@ -2,7 +2,6 @@
 
 ---
 
-```markdown
 # 🐂 TARTARUS STEALER  
 *Educational Malware Analysis & Offensive Security Research*  
 
