@@ -39,20 +39,7 @@ This project is a **learning resource** to dissect:
 
 ---
 
-## 🐃 The Bull Spirit  
-> *"The bull charges forward, unstoppable, just like data flows in the digital world."*  
-
-```
-
-/------/
- / |    ||
-
-· /---/\
-     ~~   ~~
-
-```
-
-*(Feel free to add your own image of a bull here!)*  
+### U GONNA LIKE IT, BRRRRMM..  
 
 ---
 
@@ -212,15 +199,7 @@ Recommended Setup
 
 📸 Screenshots
 
-(Add your own screenshots of the tool running in a lab environment here.)
 
-<p align="center">
-  <img src="https://via.placeholder.com/800x400?text=Placeholder+for+Screenshot+1" alt="Screenshot 1" width="80%"/>
-  <br/>
-  <img src="https://via.placeholder.com/800x400?text=Placeholder+for+Screenshot+2" alt="Screenshot 2" width="80%"/>
-</p>
-
----
 
 🤝 Contributing
 
@@ -242,10 +221,8 @@ This project is licensed under the MIT License – see the LICENSE file for deta
 
 📬 Contact
 
-For questions, suggestions, or collaboration:
-
-· GitHub Issues: https://github.com/yourusername/TartarusStealer/issues
-· Email: research@example.com
+For questions, suggestions, or problems
+· Email: ddarkochidori@gmail.com 
 
 ---
 
